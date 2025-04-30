@@ -87,12 +87,33 @@ num_gen = 1000
 mutation_prob = 0.1
 
 def local_beam_search(problem, population):
-    # Task 4
-    # Implement local beam search.
-    # Return a goal state if found in the population.
-    # Return the fittest state in the population if the next population contains no fitter state.
-    # Replace the line below with your code.
-    raise NotImplementedError
+    while True:
+        # Check if any state in population is a goal state
+        for state in population:
+            if problem.goal_test(state):
+                return state
+        
+        # Generate all successors
+        successors = []
+        for state in population:
+            for action in problem.actions(state):
+                successor = problem.result(state, action)
+                successors.append((problem.value(successor), successor))
+        
+        # Sort successors by fitness in descending order
+        successors.sort(reverse=True, key=lambda x: x[0])
+        
+        # Check if no improvement
+        if len(population) > 0:
+            current_best = max(problem.value(state) for state in population)
+            if len(successors) > 0 and successors[0][0] <= current_best:
+                return max(population, key=lambda state: problem.value(state))
+        
+        # Select top k successors (where k is the original population size)
+        if len(successors) == 0:
+            return max(population, key=lambda state: problem.value(state))
+        
+        population = [state for (val, state) in successors[:len(population)]]
 
 def stochastic_beam_search(problem, population, limit=1000):
     # Task 5
