@@ -116,12 +116,45 @@ def local_beam_search(problem, population):
         population = [state for (val, state) in successors[:len(population)]]
 
 def stochastic_beam_search(problem, population, limit=1000):
-    # Task 5
-    # Implement stochastic beam search.
-    # Return a goal state if found in the population.
-    # Return the fittest state in the population if the generation limit is reached.
-    # Replace the line below with your code.
-    raise NotImplementedError
+    for _ in range(limit):
+        # Check if any state in population is a goal state
+        for state in population:
+            if problem.goal_test(state):
+                return state
+        
+        # Generate all successors
+        successors = []
+        for state in population:
+            for action in problem.actions(state):
+                successor = problem.result(state, action)
+                successors.append(successor)
+        
+        if not successors:
+            return max(population, key=lambda state: problem.value(state))
+        
+        # Calculate fitness values
+        fitness_values = [problem.value(state) for state in successors]
+        total_fitness = sum(fitness_values)
+        
+        # Avoid division by zero
+        if total_fitness == 0:
+            probabilities = [1/len(successors) for _ in successors]
+        else:
+            probabilities = [f/total_fitness for f in fitness_values]
+        
+        # Select new population with probability proportional to fitness
+        try:
+            population = np.random.choice(
+                successors, 
+                size=len(population), 
+                replace=False, 
+                p=probabilities
+            ).tolist()
+        except:
+            # If sampling fails (due to numerical issues), return best state
+            return max(successors, key=lambda state: problem.value(state))
+    
+    return max(population, key=lambda state: problem.value(state))
 
 if __name__ == '__main__':
 
