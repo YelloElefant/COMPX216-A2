@@ -82,7 +82,7 @@ sa_schedule = exp_schedule(k=20, lam=0.005, limit=1000)
 
 # Task 3
 # Configure parameters for the genetic algorithm.
-pop_size = None
+pop_size = 100
 num_gen = 1000
 mutation_prob = 0.1
 
