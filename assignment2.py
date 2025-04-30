@@ -78,7 +78,7 @@ class KNetWalk(Problem):
 
 # Task 2
 # Configure an exponential schedule for simulated annealing.
-sa_schedule = exp_schedule(k=20, lam=0.005, limit=100)
+sa_schedule = exp_schedule(k=20, lam=0.005, limit=1000)
 
 # Task 3
 # Configure parameters for the genetic algorithm.
